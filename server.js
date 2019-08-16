@@ -4,31 +4,28 @@ const path = require("path");
 
 const app = express();
 
-//database
-
+// Connect Database
 connectDB();
 
-// middleware
+// Init Middleware
+app.use(express.json({ extended: false }));
 
-app.use(express.json({ entended: false }));
-
-// define routes
-
+// Define Routes
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
-app.use("/api/posts", require("./routes/api/posts"));
 app.use("/api/profile", require("./routes/api/profile"));
+app.use("/api/posts", require("./routes/api/posts"));
 
-// serve static prod
+// Serve static assets in production
 if (process.env.NODE_ENV === "production") {
-  // static folder
+  // Set static folder
   app.use(express.static("client/build"));
 
-  app.get("*", (requestAnimationFrame, res) => {
+  app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`server started on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
